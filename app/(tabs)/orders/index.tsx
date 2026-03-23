@@ -1,43 +1,71 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { Link } from 'expo-router'
+import { formatPrice } from '@/lib/currency'
 
-export default function OrdersScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mis Pedidos</Text>
-      
-      <ScrollView style={styles.scrollView}>
-        {/* Pedido en curso (ejemplo) */}
-        <View style={styles.orderCard}>
-          <Text style={styles.orderStatus}>En camino</Text>
-          <Text style={styles.orderInfo}>Pedido #3519 - El Buen Sabor</Text>
-          <Text style={styles.orderDetails}>Baho x1 - Total: C$180</Text>
-          <Text style={styles.orderETA}>Llega en \~5 min</Text>
-        </View>
-
-        {/* Placeholder para historial */}
-        <Text style={styles.sectionTitle}>Historial de pedidos</Text>
-        <Text style={styles.placeholder}>Aquí aparecerán tus pedidos anteriores</Text>
-      </ScrollView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#00A651', marginBottom: 20 },
-  scrollView: { flex: 1 },
-  orderCard: {
-    backgroundColor: '#f8f9fa',
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
-    borderLeftWidth: 5,
-    borderLeftColor: '#00A651',
+// Datos mock temporales (luego vendrán de Zustand / Supabase)
+const MOCK_ORDERS = [
+  {
+    id: 'order-001',
+    restaurant: { name: 'El Buen Sabor' },
+    total: 380,
+    status: 'on_way' as const,
+    createdAt: 'Hoy 12:45',
   },
-  orderStatus: { fontSize: 18, fontWeight: 'bold', color: '#00A651' },
-  orderInfo: { fontSize: 16, marginTop: 5 },
-  orderDetails: { fontSize: 14, color: '#555', marginTop: 5 },
-  orderETA: { fontSize: 14, color: '#888', marginTop: 5 },
-  sectionTitle: { fontSize: 20, fontWeight: '600', marginTop: 20, marginBottom: 10 },
-  placeholder: { color: '#888', fontSize: 16, textAlign: 'center' },
-});
+  {
+    id: 'order-002',
+    restaurant: { name: 'La Fritanga' },
+    total: 250,
+    status: 'delivered' as const,
+    createdAt: 'Ayer 19:30',
+  },
+]
+
+export default function Orders() {
+  return (
+    <ScrollView className="flex-1 bg-gray-50">
+      <View className="p-4">
+        <Text className="text-2xl font-bold mb-4">Mis Pedidos</Text>
+
+        {MOCK_ORDERS.length === 0 ? (
+          <Text className="text-center text-gray-600 mt-10">
+            Aún no tienes pedidos
+          </Text>
+        ) : (
+          MOCK_ORDERS.map((order) => (
+            <Link href={`/orders/${order.id}`} key={order.id} asChild>
+              <TouchableOpacity className="bg-white p-4 mb-3 rounded-xl shadow-sm">
+                <View className="flex-row justify-between items-start">
+                  <View>
+                    <Text className="font-bold text-lg">{order.restaurant.name}</Text>
+                    <Text className="text-gray-500 text-sm mt-1">{order.createdAt}</Text>
+                  </View>
+                  <Text className="font-bold text-lg">{formatPrice(order.total)}</Text>
+                </View>
+
+                <View className="mt-3">
+                  <Text
+                    className={`font-medium ${
+                      order.status === 'delivered'
+                        ? 'text-green-600'
+                        : order.status === 'on_way'
+                        ? 'text-[${colors.primary}]'
+                        : 'text-amber-600'
+                    }`}
+                  >
+                    {order.status === 'pending'
+                      ? 'Pendiente'
+                      : order.status === 'preparing'
+                      ? 'Preparando'
+                      : order.status === 'on_way'
+                      ? 'En camino'
+                      : 'Entregado'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </Link>
+          ))
+        )}
+      </View>
+    </ScrollView>
+  )
+}

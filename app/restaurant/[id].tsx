@@ -6,7 +6,9 @@ import Button from '@/components/ui/Button';
 import { colors } from '@/theme/colors';
 
 // Datos mock temporales (luego vendrán de Supabase o API)
-const MOCK_MENU_ITEMS = [
+{MOCK_MENU_ITEMS.map((item) => (
+  <MenuItemCard key={item.id} item={item} />
+))}
   {
     id: '1',
     name: 'Baho tradicional',

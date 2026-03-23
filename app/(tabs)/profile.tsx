@@ -1,62 +1,33 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native'
+import { colors } from '@/theme/colors'
+import Button from '@/components/ui/Button'
 
-export default function ProfileScreen() {
+export default function Profile() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Perfil</Text>
-      
-      <View style={styles.infoCard}>
-        <Text style={styles.name}>Antonio</Text>
-        <Text style={styles.email}>antonio@example.com</Text>
-        <Text style={styles.phone}>+505 8888-9999</Text>
+    <View className="flex-1 bg-gray-50 p-6">
+      <View className="items-center mb-8 mt-6">
+        <View className="w-24 h-24 rounded-full bg-[${colors.primary}] items-center justify-center">
+          <Text className="text-white text-3xl font-bold">Y</Text>
+        </View>
+        <Text className="text-xl font-bold mt-4">Yader</Text>
+        <Text className="text-gray-600">+505 1234-5678</Text>
       </View>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Editar perfil</Text>
-      </TouchableOpacity>
+      <View className="bg-white rounded-xl overflow-hidden mb-6">
+        <TouchableOpacity className="p-4 border-b border-gray-100">
+          <Text className="font-medium">Mis direcciones</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="p-4 border-b border-gray-100">
+          <Text className="font-medium">Métodos de pago</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="p-4">
+          <Text className="font-medium">Historial de pedidos</Text>
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Métodos de pago</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Direcciones guardadas</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Cerrar sesión</Text>
-      </TouchableOpacity>
+      <Button variant="outline" className="mt-auto mb-10">
+        Cerrar sesión
+      </Button>
     </View>
-  );
+  )
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#00A651', marginBottom: 20 },
-  infoCard: {
-    backgroundColor: '#f8f9fa',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  name: { fontSize: 22, fontWeight: 'bold' },
-  email: { fontSize: 16, color: '#555', marginTop: 5 },
-  phone: { fontSize: 16, color: '#555', marginTop: 5 },
-  button: {
-    backgroundColor: '#00A651',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  logoutButton: {
-    backgroundColor: '#E30613',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 30,
-    alignItems: 'center',
-  },
-  logoutText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-});

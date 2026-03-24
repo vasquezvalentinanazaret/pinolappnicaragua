@@ -1,3 +1,5 @@
+# Crear babel.config.js si no existe
+cat > babel.config.js << 'EOF'
 module.exports = function(api) {
   api.cache(true);
   return {
@@ -5,3 +7,26 @@ module.exports = function(api) {
     plugins: ['nativewind/babel'],
   };
 };
+EOF
+
+# Crear tailwind.config.js si no existe
+cat > tailwind.config.js << 'EOF'
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}"
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: "#00A651",
+        secondary: "#E30613",
+        background: "#F5F5F5",
+        text: "#333333",
+      },
+    },
+  },
+  plugins: [],
+}
+EOF

@@ -1,58 +1,79 @@
-import { View, Text } from 'react-native'
-import { useCartStore } from '@/store/cartStore'
-import { formatPrice } from '@/lib/currency'
-import Button from '@/components/ui/Button'
-import { DELIVERY_FEE } from '@/lib/constants'
+import { View, Text, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { useCartStore } from "@/src/store/cartStore";
+import { useOrderStore } from "@/src/store/orderStore";
+import Button from "@/src/components/ui/Button";
+import CartSummary from "@/src/components/cart/CartSummary";
+import Input from "@/src/components/ui/Input";
 
-export default function Checkout() {
-  const { items, total, clearCart } = useCartStore()
+export default function CheckoutScreen() {
+  const router = useRouter();
+  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { createOrder } = useOrderStore();
+  const [address, setAddress] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const subtotal = total()
-  const totalWithDelivery = subtotal + DELIVERY_FEE
+  const handlePlaceOrder = async () => {
+    if (!address.trim()) {
+      alert("Por favor ingresa una dirección de entrega");
+      return;
+    }
 
-  const handleConfirm = () => {
-    // Aquí iría llamada a Supabase / crear orden
-    alert('¡Pedido confirmado! (mock)')
-    clearCart()
-  }
+    setLoading(true);
+    try {
+      const order = await createOrder({
+        items,
+        total: getTotalPrice() + 30,
+        address,
+        instructions,
+        restaurantId: items[0]?.restaurantId,
+        restaurant: items[0]?.restaurant,
+      });
+      clearCart();
+      router.push(`/orders/${order.id}`);
+    } catch (error) {
+      console.error(error);
+      alert("Error al crear el pedido");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deliveryFee = 30;
+  const subtotal = getTotalPrice();
+  const total = subtotal + deliveryFee;
 
   return (
-    <View className="flex-1 p-5 bg-gray-50">
-      <Text className="text-2xl font-bold mb-6">Confirmar pedido</Text>
+    <ScrollView className="flex-1 bg-background">
+      <View className="px-4 pt-4">
+        <Text className="text-lg font-semibold text-text mb-3">Dirección de entrega</Text>
+        <Input
+          placeholder="Ej: De la Iglesia San Juan 2c al norte"
+          value={address}
+          onChangeText={setAddress}
+          multiline
+        />
 
-      <View className="bg-white p-5 rounded-xl mb-6">
-        <Text className="font-bold mb-3">Resumen</Text>
-        {items.map(({ item, quantity }) => (
-          <View key={item.id} className="flex-row justify-between py-2">
-            <Text>{quantity} × {item.name}</Text>
-            <Text>{formatPrice(item.price * quantity)}</Text>
-          </View>
-        ))}
-        <View className="border-t border-gray-200 mt-3 pt-3 flex-row justify-between">
-          <Text>Subtotal</Text>
-          <Text>{formatPrice(subtotal)}</Text>
-        </View>
-        <View className="flex-row justify-between mt-2">
-          <Text>Envío</Text>
-          <Text>{formatPrice(DELIVERY_FEE)}</Text>
-        </View>
-        <View className="flex-row justify-between font-bold text-lg mt-4 pt-3 border-t border-gray-300">
-          <Text>Total</Text>
-          <Text>{formatPrice(totalWithDelivery)}</Text>
-        </View>
-      </View>
+        <Text className="text-lg font-semibold text-text mt-4 mb-3">Instrucciones (opcional)</Text>
+        <Input
+          placeholder="Ej: Portón verde, timbre no funciona"
+          value={instructions}
+          onChangeText={setInstructions}
+          multiline
+        />
 
-      <View className="bg-white p-5 rounded-xl mb-6">
-        <Text className="font-bold mb-3">Método de pago</Text>
-        <Text className="text-gray-600">Efectivo al recibir</Text>
-        {/* Aquí irían opciones de tarjeta después */}
-      </View>
+        <Text className="text-lg font-semibold text-text mt-4 mb-3">Resumen del pedido</Text>
+        <CartSummary subtotal={subtotal} delivery={deliveryFee} total={total} />
 
-      <View className="mt-auto mb-8">
-        <Button onPress={handleConfirm}>
-          Confirmar pedido • {formatPrice(totalWithDelivery)}
-        </Button>
+        <Button
+          title={loading ? "Procesando..." : "Confirmar pedido"}
+          onPress={handlePlaceOrder}
+          disabled={loading}
+          className="mt-4 mb-8"
+        />
       </View>
-    </View>
-  )
+    </ScrollView>
+  );
 }

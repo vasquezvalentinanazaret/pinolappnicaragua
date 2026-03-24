@@ -1,11 +1,25 @@
-# PinolApp Nicaragua
+# PinolApp - Plataforma de Delivery en Nicaragua
 
-App de delivery 100% nicaragüense – Baho, Gallo pinto, Combo típico y más.
+Aplicación de delivery de comida desarrollada con React Native Expo.
 
-**Estado actual (Marzo 2026):**  
-✅ Expo Router + NativeWind + Zustand + Tipado completo  
-✅ Autenticación mock + Carrito + Pedidos + Tracking  
-✅ Menú con añadir al carrito  
-✅ Listo para conectar Supabase
+## Características
 
-¡Vamos a construirla paso a paso!
+- 🍔 Catálogo de restaurantes
+- 🛒 Carrito de compras
+- 📍 Seguimiento de pedidos en tiempo real
+- 💳 Procesamiento de pagos
+- 👤 Perfil de usuario
+
+## Requisitos previos
+
+- Node.js >= 18
+- npm o yarn
+- Expo CLI
+- Cuenta en Supabase
+
+## Instalación
+
+1. Clonar el repositorio
+```bash
+git clone https://github.com/tu-usuario/pinolapp.git
+cd pinolapp

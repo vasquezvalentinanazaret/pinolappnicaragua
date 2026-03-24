@@ -1,16 +1,30 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import { colors } from '@/theme/colors';
-import { useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/src/theme/colors";
 
-export default function Header({ title }: { title: string }) {
+interface HeaderProps {
+  title?: string;
+  showBack?: boolean;
+  showCart?: boolean;
+}
+
+export default function Header({ title, showBack = false, showCart = true }: HeaderProps) {
   const router = useRouter();
+
   return (
-    <View className="flex-row items-center justify-between px-5 py-4 bg-white border-b border-gray-200">
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text className="text-2xl">←</Text>
-      </TouchableOpacity>
-      <Text className="font-bold text-xl">{title}</Text>
-      <View className="w-8" />
+    <View className="bg-primary pt-12 pb-3 px-4 flex-row items-center">
+      {showBack && (
+        <TouchableOpacity onPress={() => router.back()} className="mr-3">
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+      )}
+      <Text className="flex-1 text-white text-lg font-bold">{title || "PinolApp"}</Text>
+      {showCart && (
+        <TouchableOpacity onPress={() => router.push("/cart")}>
+          <Ionicons name="cart-outline" size={24} color="white" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

@@ -1,71 +1,79 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import { Link } from 'expo-router'
-import { formatPrice } from '@/lib/currency'
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { useOrders } from "@/src/hooks/useOrders";
+import OrderStatusTimeline from "@/src/components/order/OrderStatusTimeline";
 
-// Datos mock temporales (luego vendrán de Zustand / Supabase)
-const MOCK_ORDERS = [
-  {
-    id: 'order-001',
-    restaurant: { name: 'El Buen Sabor' },
-    total: 380,
-    status: 'on_way' as const,
-    createdAt: 'Hoy 12:45',
-  },
-  {
-    id: 'order-002',
-    restaurant: { name: 'La Fritanga' },
-    total: 250,
-    status: 'delivered' as const,
-    createdAt: 'Ayer 19:30',
-  },
-]
+export default function OrdersScreen() {
+  const router = useRouter();
+  const { activeOrders, completedOrders, loading } = useOrders();
 
-export default function Orders() {
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView className="flex-1 bg-gray-50">
-      <View className="p-4">
-        <Text className="text-2xl font-bold mb-4">Mis Pedidos</Text>
+    <ScrollView className="flex-1 bg-background">
+      <View className="px-4 pt-6">
+        <Text className="text-2xl font-bold text-text mb-4">Mis Pedidos</Text>
 
-        {MOCK_ORDERS.length === 0 ? (
-          <Text className="text-center text-gray-600 mt-10">
-            Aún no tienes pedidos
-          </Text>
-        ) : (
-          MOCK_ORDERS.map((order) => (
-            <Link href={`/orders/${order.id}`} key={order.id} asChild>
-              <TouchableOpacity className="bg-white p-4 mb-3 rounded-xl shadow-sm">
-                <View className="flex-row justify-between items-start">
-                  <View>
-                    <Text className="font-bold text-lg">{order.restaurant.name}</Text>
-                    <Text className="text-gray-500 text-sm mt-1">{order.createdAt}</Text>
-                  </View>
-                  <Text className="font-bold text-lg">{formatPrice(order.total)}</Text>
+        {activeOrders.length > 0 && (
+          <>
+            <Text className="text-lg font-semibold text-text mb-3">En curso</Text>
+            {activeOrders.map((order) => (
+              <TouchableOpacity
+                key={order.id}
+                className="bg-white rounded-lg p-4 mb-3 shadow-sm"
+                onPress={() => router.push(`/orders/${order.id}`)}
+              >
+                <View className="flex-row justify-between mb-2">
+                  <Text className="font-semibold text-text">#{order.id}</Text>
+                  <Text className="text-gray-500">{order.restaurant}</Text>
                 </View>
-
-                <View className="mt-3">
-                  <Text
-                    className={`font-medium ${
-                      order.status === 'delivered'
-                        ? 'text-green-600'
-                        : order.status === 'on_way'
-                        ? 'text-[${colors.primary}]'
-                        : 'text-amber-600'
-                    }`}
-                  >
-                    {order.status === 'pending'
-                      ? 'Pendiente'
-                      : order.status === 'preparing'
-                      ? 'Preparando'
-                      : order.status === 'on_way'
-                      ? 'En camino'
-                      : 'Entregado'}
-                  </Text>
-                </View>
+                <Text className="text-gray-500 mb-2">
+                  {order.items.length} {order.items.length === 1 ? "producto" : "productos"}
+                </Text>
+                <OrderStatusTimeline status={order.status} compact />
+                <Text className="text-primary font-bold mt-2">C$ {order.total}</Text>
               </TouchableOpacity>
-            </Link>
-          ))
+            ))}
+          </>
+        )}
+
+        {completedOrders.length > 0 && (
+          <>
+            <Text className="text-lg font-semibold text-text mb-3 mt-4">Historial</Text>
+            {completedOrders.map((order) => (
+              <TouchableOpacity
+                key={order.id}
+                className="bg-white rounded-lg p-4 mb-3 shadow-sm"
+                onPress={() => router.push(`/orders/${order.id}`)}
+              >
+                <View className="flex-row justify-between mb-2">
+                  <Text className="font-semibold text-text">#{order.id}</Text>
+                  <Text className="text-gray-500">{order.restaurant}</Text>
+                </View>
+                <Text className="text-gray-500">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </Text>
+                <Text className="text-primary font-bold mt-2">C$ {order.total}</Text>
+              </TouchableOpacity>
+            ))}
+          </>
+        )}
+
+        {activeOrders.length === 0 && completedOrders.length === 0 && (
+          <View className="items-center mt-20">
+            <Text className="text-gray-500 text-lg">No tienes pedidos aún</Text>
+            <Text className="text-gray-400 text-center mt-2">
+              ¡Explora restaurantes y haz tu primer pedido!
+            </Text>
+          </View>
         )}
       </View>
     </ScrollView>
-  )
+  );
 }

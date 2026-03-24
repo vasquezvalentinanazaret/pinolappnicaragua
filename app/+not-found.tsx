@@ -1,18 +1,22 @@
-import { View, Text } from 'react-native'
-import { Link } from 'expo-router'
-import Button from '@/components/ui/Button'
+import { View, Text, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
-export default function NotFound() {
+export default function NotFoundScreen() {
+  const router = useRouter();
+
   return (
-    <View className="flex-1 items-center justify-center bg-gray-50 p-6">
-      <Text className="text-6xl font-bold mb-4">404</Text>
-      <Text className="text-xl text-gray-600 mb-8 text-center">
-        La página que buscas no existe
+    <View className="flex-1 justify-center items-center bg-background p-4">
+      <Text className="text-6xl mb-4">😕</Text>
+      <Text className="text-2xl font-bold text-text mb-2">Página no encontrada</Text>
+      <Text className="text-gray-500 text-center mb-6">
+        Lo sentimos, la página que estás buscando no existe.
       </Text>
-
-      <Link href="/(tabs)" asChild>
-        <Button>Volver al inicio</Button>
-      </Link>
+      <TouchableOpacity
+        className="bg-primary py-3 px-6 rounded-lg"
+        onPress={() => router.push("/")}
+      >
+        <Text className="text-white font-semibold">Ir al inicio</Text>
+      </TouchableOpacity>
     </View>
-  )
+  );
 }

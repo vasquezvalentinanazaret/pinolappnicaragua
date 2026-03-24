@@ -1,10 +1,5 @@
-import { useCartStore } from '@/store/cartStore';
+import { useCartStore } from "@/src/store/cartStore";
 
 export const useCart = () => {
-  const store = useCartStore();
-  return {
-    ...store,
-    count: store.items.length,
-    totalPrice: store.total(),
-  };
-};
+  const items = useCartStore((state) => state.items);
+  const addItem = useCartStore((state) => state.addItem);

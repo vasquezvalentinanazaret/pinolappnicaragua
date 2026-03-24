@@ -1,28 +1,53 @@
 export interface Restaurant {
-  id: string
-  name: string
-  rating: number
-  time: string
-  category: string
-  image?: string
+  id: number;
+  name: string;
+  rating: number;
+  deliveryTime: number;
+  deliveryFee: number;
+  address: string;
+  image: string;
+  category: string;
 }
 
 export interface MenuItem {
-  id: string
-  name: string
-  description?: string
-  price: number
-  image?: string
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  restaurant: string;
+  restaurantId: number;
+  image: string;
 }
 
-export type OrderStatus = 'pending' | 'preparing' | 'on_way' | 'delivered' | 'cancelled'
-
 export interface Order {
-  id: string
-  restaurant: Restaurant
-  items: { item: MenuItem; quantity: number }[]
-  total: number
-  status: OrderStatus
-  createdAt: string
-  estimatedDelivery?: string
+  id: number;
+  restaurant: string;
+  items: Array<{
+    name: string;
+    price: number;
+    quantity: number;
+  }>;
+  total: number;
+  status: "pending" | "confirmed" | "preparing" | "delivering" | "delivered";
+  createdAt: string;
+  address: string;
+  instructions?: string;
+  driver?: Driver;
+}
+
+export interface Driver {
+  id: number;
+  name: string;
+  phone: string;
+  rating: number;
+  photo: string;
+}
+
+export interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  restaurant: string;
+  restaurantId: number;
 }

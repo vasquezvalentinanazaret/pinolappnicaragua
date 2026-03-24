@@ -1,33 +1,56 @@
-import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
-import { colors } from '@/theme/colors'
-import { cn } from '@/utils/cn' // puedes crear este helper o usar clsx
+import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import { colors } from "@/src/theme/colors";
 
-interface ButtonProps extends TouchableOpacityProps {
-  variant?: 'primary' | 'outline' | 'danger'
-  children: React.ReactNode
+interface ButtonProps {
+  title: string;
+  onPress: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+  variant?: "primary" | "secondary" | "outline";
+  className?: string;
 }
 
 export default function Button({
-  variant = 'primary',
-  children,
-  className,
-  ...props
+  title,
+  onPress,
+  loading = false,
+  disabled = false,
+  variant = "primary",
+  className = "",
 }: ButtonProps) {
-  const base = 'py-3 px-6 rounded-lg items-center'
-  const variants = {
-    primary: `bg-[${colors.primary}]`,
-    outline: `border border-[${colors.primary}]`,
-    danger: `bg-[${colors.danger}]`,
-  }
+  const getButtonStyles = () => {
+    switch (variant) {
+      case "primary":
+        return "bg-primary";
+      case "secondary":
+        return "bg-secondary";
+      case "outline":
+        return "bg-transparent border border-primary";
+      default:
+        return "bg-primary";
+    }
+  };
+
+  const getTextStyles = () => {
+    switch (variant) {
+      case "outline":
+        return "text-primary";
+      default:
+        return "text-white";
+    }
+  };
 
   return (
     <TouchableOpacity
-      className={cn(base, variants[variant], className)}
-      {...props}
+      className={`py-3 rounded-lg items-center ${getButtonStyles()} ${disabled ? "opacity-50" : ""} ${className}`}
+      onPress={onPress}
+      disabled={disabled || loading}
     >
-      <Text className={variant === 'outline' ? `text-[${colors.primary}] font-bold` : 'text-white font-bold'}>
-        {children}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={variant === "outline" ? colors.primary : "white"} />
+      ) : (
+        <Text className={`font-semibold ${getTextStyles()}`}>{title}</Text>
+      )}
     </TouchableOpacity>
-  )
+  );
 }

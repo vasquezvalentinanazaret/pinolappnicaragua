@@ -9,7 +9,7 @@
     "splash": {
       "image": "./src/assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#00A651"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -18,16 +18,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#00A651"
       }
     },
     "web": {
       "favicon": "./src/assets/images/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "tu-project-id-aqui"
-      }
     }
   }
 }

@@ -1,3 +1,4 @@
+cat > package.json << 'FIN'
 {
   "name": "pinolapp-nicaragua",
   "version": "1.0.0",
@@ -27,3 +28,4 @@
     "tailwindcss": "^3.4.13"
   }
 }
+FIN

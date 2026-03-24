@@ -1,31 +1,29 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, ReactNode } from "react";
+import { useLocation } from "@/src/hooks/useLocation";
 
-type LocationContextType = {
-  latitude: number | null;
-  longitude: number | null;
-  setLocation: (lat: number, lng: number) => void;
-};
+interface LocationContextType {
+  location: { latitude: number; longitude: number; address?: string } | null;
+  error: string | null;
+  loading: boolean;
+  refreshLocation: () => void;
+}
 
-const LocationContext = createContext<LocationContextType | null>(null);
+const LocationContext = createContext<LocationContextType | undefined>(undefined);
 
-export function LocationProvider({ children }: { children: React.ReactNode }) {
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
-
-  const setLocation = (lat: number, lng: number) => {
-    setLatitude(lat);
-    setLongitude(lng);
-  };
+export const LocationProvider = ({ children }: { children: ReactNode }) => {
+  const locationData = useLocation();
 
   return (
-    <LocationContext.Provider value={{ latitude, longitude, setLocation }}>
+    <LocationContext.Provider value={locationData}>
       {children}
     </LocationContext.Provider>
   );
-}
+};
 
 export const useLocationContext = () => {
-  const ctx = useContext(LocationContext);
-  if (!ctx) throw new Error('useLocationContext must be used inside provider');
-  return ctx;
+  const context = useContext(LocationContext);
+  if (context === undefined) {
+    throw new Error("useLocationContext must be used within a LocationProvider");
+  }
+  return context;
 };

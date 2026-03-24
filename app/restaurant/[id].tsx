@@ -1,133 +1,69 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { formatPrice } from '@/lib/currency';
-import { useCartStore } from '@/store/cartStore';
-import Button from '@/components/ui/Button';
-import { colors } from '@/theme/colors';
+import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { getRestaurantById, getMenuItemsByRestaurant } from "@/src/lib/mockData";
+import MenuItemCard from "@/src/components/restaurant/MenuItemCard";
+import { useCartStore } from "@/src/store/cartStore";
+import { Restaurant, MenuItem } from "@/src/types";
+import Button from "@/src/components/ui/Button";
 
-// Datos mock temporales (luego vendrán de Supabase o API)
-{MOCK_MENU_ITEMS.map((item) => (
-  <MenuItemCard key={item.id} item={item} />
-))}
-  {
-    id: '1',
-    name: 'Baho tradicional',
-    description: 'Con yuca, plátano maduro y carne de cerdo',
-    price: 180,
-    image: 'https://via.placeholder.com/300x200?text=Baho',
-  },
-  {
-    id: '2',
-    name: 'Gallo pinto con carne asada',
-    description: 'Arroz con frijoles, carne asada y ensalada',
-    price: 150,
-    image: 'https://via.placeholder.com/300x200?text=Gallo+Pinto',
-  },
-  {
-    id: '3',
-    name: 'Combo típico',
-    description: 'Gallo pinto, tajadas, queso frito y café',
-    price: 220,
-    image: 'https://via.placeholder.com/300x200?text=Combo+Tipico',
-  },
-  {
-    id: '4',
-    name: 'Nacatamal grande',
-    description: 'Con pollo, cerdo, arroz y vegetales',
-    price: 90,
-    image: 'https://via.placeholder.com/300x200?text=Nacatamal',
-  },
-  {
-    id: '5',
-    name: 'Fresco de cacao',
-    description: 'Bebida tradicional nicaragüense',
-    price: 40,
-    image: 'https://via.placeholder.com/300x200?text=Fresco',
-  },
-];
-
-export default function RestaurantDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { addItem } = useCartStore();
+export default function RestaurantScreen() {
+  const { id } = useLocalSearchParams();
   const router = useRouter();
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { items, getTotalQuantity } = useCartStore();
 
-  // En producción: fetch real del restaurante y su menú usando el id
-  const restaurantName = `Restaurante #${id}`; // ← mock, reemplazar por nombre real
+  useEffect(() => {
+    const fetchData = async () => {
+      const restaurantData = getRestaurantById(Number(id));
+      const menuData = getMenuItemsByRestaurant(Number(id));
+      setRestaurant(restaurantData);
+      setMenuItems(menuData);
+      setLoading(false);
+    };
+    fetchData();
+  }, [id]);
 
-  const handleAddToCart = (item: (typeof MOCK_MENU_ITEMS)[0]) => {
-    addItem(item);
-    // Opcional: toast o alerta pequeña
-    // alert(`Añadido: ${item.name}`);
-  };
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
+  if (!restaurant) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>Restaurante no encontrado</Text>
+      </View>
+    );
+  }
+
+  const cartQuantity = getTotalQuantity();
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
-      {/* Header / Banner del restaurante */}
-      <View className="h-52 bg-gray-300 relative">
+    <ScrollView className="flex-1 bg-background">
+      <View className="h-48 bg-gray-300">
         <Image
-          source={{ uri: 'https://via.placeholder.com/600x300?text=Restaurante+Pinolero' }}
-          className="absolute inset-0 w-full h-full"
+          source={{ uri: restaurant.image || "https://via.placeholder.com/400x200" }}
+          className="w-full h-full"
           resizeMode="cover"
         />
-        <View className="absolute bottom-0 left-0 right-0 bg-black/40 p-4">
-          <Text className="text-white text-2xl font-bold">{restaurantName}</Text>
-          <Text className="text-white/90">⭐ 4.7 • 15-25 min • Típico</Text>
-        </View>
       </View>
 
-      {/* Contenido principal */}
-      <View className="p-5">
-        <Text className="text-2xl font-bold mb-2">Menú</Text>
-        <Text className="text-gray-600 mb-6">
-          Baho • Gallo pinto • Combo típico • Nacatamal • Bebidas y más
-        </Text>
-
-        {/* Lista de ítems del menú */}
-        {MOCK_MENU_ITEMS.map((item) => (
-          <View
-            key={item.id}
-            className="flex-row bg-white rounded-xl mb-4 shadow-sm overflow-hidden"
-          >
-            {/* Imagen del plato (izquierda) */}
-            <Image
-              source={{ uri: item.image }}
-              className="w-28 h-28"
-              resizeMode="cover"
-            />
-
-            {/* Info + botón */}
-            <View className="flex-1 p-3 justify-between">
-              <View>
-                <Text className="font-semibold text-base">{item.name}</Text>
-                <Text className="text-gray-500 text-sm mt-1">{item.description}</Text>
-              </View>
-
-              <View className="flex-row justify-between items-center mt-2">
-                <Text className="font-bold text-lg text-[${colors.primary}]">
-                  {formatPrice(item.price)}
-                </Text>
-
-                <TouchableOpacity
-                  onPress={() => handleAddToCart(item)}
-                  className="bg-[${colors.primary}] px-4 py-2 rounded-lg"
-                >
-                  <Text className="text-white font-medium">+ Añadir</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        ))}
-
-        {/* Botón para ir al carrito (flotante o fijo abajo) */}
-        <View className="mt-8 mb-10 items-center">
-          <Button
-            onPress={() => router.push('/cart')}
-            className="w-full max-w-xs"
-          >
-            Ver carrito
-          </Button>
+      <View className="px-4 pt-4">
+        <Text className="text-2xl font-bold text-text">{restaurant.name}</Text>
+        <View className="flex-row items-center mt-1">
+          <Text className="text-yellow-500">★</Text>
+          <Text className="text-gray-600 ml-1">{restaurant.rating} · {restaurant.deliveryTime} min</Text>
         </View>
+        <Text className="text-gray-500 mt-2">{restaurant.address}</Text>
       </View>
-    </ScrollView>
-  );
-        }
+
+      <View className="px-4 mt-6">
+        <Text className="text-lg font-semibold text-text mb-3">Menú</Text>
+        {menuItems.map((item) => (
+          <MenuItemCard key={item.id} item

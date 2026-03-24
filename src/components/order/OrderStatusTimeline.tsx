@@ -1,59 +1,58 @@
-import { View, Text } from 'react-native'
-import { OrderStatus } from '@/types'
-import { colors } from '@/theme/colors'
+import { View, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const steps = [
-  { key: 'pending', label: 'Recibido' },
-  { key: 'preparing', label: 'Preparando' },
-  { key: 'on_way', label: 'En camino' },
-  { key: 'delivered', label: 'Entregado' },
-] as const
-
-type Props = {
-  status: OrderStatus
+interface OrderStatusTimelineProps {
+  status: "pending" | "confirmed" | "preparing" | "delivering" | "delivered";
+  compact?: boolean;
 }
 
-export default function OrderStatusTimeline({ status }: Props) {
-  const currentIndex = steps.findIndex(s => s.key === status)
+const statuses = [
+  { key: "pending", label: "Recibido", icon: "checkmark-circle" },
+  { key: "confirmed", label: "Confirmado", icon: "checkmark-circle" },
+  { key: "preparing", label: "Preparando", icon: "restaurant" },
+  { key: "delivering", label: "En camino", icon: "bicycle" },
+  { key: "delivered", label: "Entregado", icon: "home" },
+];
+
+const statusOrder = ["pending", "confirmed", "preparing", "delivering", "delivered"];
+
+export default function OrderStatusTimeline({ status, compact = false }: OrderStatusTimelineProps) {
+  const currentIndex = statusOrder.indexOf(status);
+
+  if (compact) {
+    const currentStatus = statuses.find((s) => s.key === status);
+    return (
+      <View className="flex-row items-center">
+        <Ionicons name={currentStatus?.icon as any} size={16} color="#00A651" />
+        <Text className="text-sm text-primary ml-1">{currentStatus?.label}</Text>
+      </View>
+    );
+  }
 
   return (
-    <View className="my-6">
-      <View className="flex-row justify-between mb-2">
-        {steps.map((step, index) => (
-          <View key={step.key} className="items-center flex-1">
-            <View
-              className={`w-8 h-8 rounded-full items-center justify-center border-2 ${
-                index <= currentIndex
-                  ? `bg-[\( {colors.primary}] border-[ \){colors.primary}]`
-                  : 'bg-gray-200 border-gray-300'
-              }`}
-            >
-              <Text
-                className={`text-xs font-bold ${
-                  index <= currentIndex ? 'text-white' : 'text-gray-500'
-                }`}
-              >
-                {index + 1}
-              </Text>
-            </View>
-            <Text
-              className={`text-xs mt-1 font-medium ${
-                index <= currentIndex ? `text-[${colors.primary}]` : 'text-gray-500'
-              }`}
-            >
-              {step.label}
-            </Text>
+    <View className="flex-row justify-between items-center py-4">
+      {statuses.map((s, index) => (
+        <View key={s.key} className="flex-1 items-center">
+          <View
+            className={`w-8 h-8 rounded-full items-center justify-center ${
+              index <= currentIndex ? "bg-primary" : "bg-gray-300"
+            }`}
+          >
+            <Ionicons
+              name={s.icon as any}
+              size={16}
+              color={index <= currentIndex ? "white" : "#9CA3AF"}
+            />
           </View>
-        ))}
-      </View>
-
-      {/* Línea de progreso */}
-      <View className="h-1 bg-gray-200 mt-1 relative">
-        <View
-          className="absolute h-full bg-[${colors.primary}]"
-          style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
-        />
-      </View>
+          <Text
+            className={`text-xs mt-1 text-center ${
+              index <= currentIndex ? "text-primary font-semibold" : "text-gray-400"
+            }`}
+          >
+            {s.label}
+          </Text>
+        </View>
+      ))}
     </View>
-  )
+  );
 }

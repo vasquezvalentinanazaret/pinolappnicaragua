@@ -66,4 +66,23 @@ export default function RestaurantScreen() {
       <View className="px-4 mt-6">
         <Text className="text-lg font-semibold text-text mb-3">Menú</Text>
         {menuItems.map((item) => (
-          <MenuItemCard key={item.id} item
+          <MenuItemCard key={item.id} item={item} />
+        ))}
+      </View>
+
+      <View className="h-24" />
+
+      {cartQuantity > 0 && (
+        <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+          <TouchableOpacity
+            className="bg-primary py-3 rounded-lg flex-row justify-between px-4"
+            onPress={() => router.push("/cart")}
+          >
+            <Text className="text-white font-semibold">Ver carrito</Text>
+            <Text className="text-white font-bold">{cartQuantity} items</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </ScrollView>
+  );
+}

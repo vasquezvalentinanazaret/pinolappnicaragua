@@ -1,17 +1,29 @@
-import { create } from 'zustand';
-import { Order } from '@/types';
+import { useState, useEffect } from "react";
+import { useOrderStore } from "@/src/store/orderStore";
+import { Order } from "@/src/types";
 
-interface OrderState {
-  orders: Order[];
-  addOrder: (order: Order) => void;
-  updateOrderStatus: (id: string, status: Order['status']) => void;
-}
+export const useOrders = () => {
+  const [loading, setLoading] = useState(true);
+  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
+  const [completedOrders, setCompletedOrders] = useState<Order[]>([]);
 
-export const useOrdersStore = create<OrderState>((set) => ({
-  orders: [],
-  addOrder: (order) => set((state) => ({ orders: [...state.orders, order] })),
-  updateOrderStatus: (id, status) =>
-    set((state) => ({
-      orders: state.orders.map((o) => (o.id === id ? { ...o, status } : o)),
-    })),
-}));
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const active = useOrderStore.getState().activeOrders;
+        const completed = useOrderStore.getState().completedOrders;
+        setActiveOrders(active);
+        setCompletedOrders(completed);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  return { activeOrders, completedOrders, loading };
+};

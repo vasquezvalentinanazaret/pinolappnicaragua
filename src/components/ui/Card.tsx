@@ -1,16 +1,20 @@
-import { View, ViewProps } from 'react-native'
+import { View, Text, TouchableOpacity } from "react-native";
 
-interface CardProps extends ViewProps {
-  children: React.ReactNode
+interface CardProps {
+  children: React.ReactNode;
+  onPress?: () => void;
+  className?: string;
 }
 
-export default function Card({ children, className, ...props }: CardProps) {
+export default function Card({ children, onPress, className = "" }: CardProps) {
+  const Component = onPress ? TouchableOpacity : View;
+
   return (
-    <View
-      className={`bg-white rounded-xl shadow-sm overflow-hidden ${className}`}
-      {...props}
+    <Component
+      className={`bg-white rounded-lg p-4 shadow-sm ${className}`}
+      onPress={onPress}
     >
       {children}
-    </View>
-  )
+    </Component>
+  );
 }

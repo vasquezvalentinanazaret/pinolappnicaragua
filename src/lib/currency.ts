@@ -1,5 +1,7 @@
-import { CURRENCY } from './constants'
+export const formatCurrency = (amount: number): string => {
+  return `C$ ${amount.toFixed(2)}`;
+};
 
-export function formatPrice(amount: number): string {
-  return `\( {CURRENCY} \){amount.toLocaleString('es-NI', { minimumFractionDigits: 0 })}`
-}
+export const parseCurrency = (value: string): number => {
+  return parseFloat(value.replace(/[^0-9.-]/g, ""));
+};

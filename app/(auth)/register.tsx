@@ -17,25 +17,20 @@ export default function RegisterScreen() {
       alert("Las contraseñas no coinciden");
       return;
     }
-
     setLoading(true);
-    try {
-      // Aquí irá la lógica de registro
-      router.replace("/(tabs)");
-    } catch (error) {
-      console.error(error);
-    } finally {
+    setTimeout(() => {
       setLoading(false);
-    }
+      router.replace("/(tabs)");
+    }, 1000);
   };
 
   return (
     <View className="flex-1 bg-white px-6 pt-20">
       <View className="items-center mb-8">
-        <View className="w-24 h-24 bg-primary rounded-full items-center justify-center">
-          <Text className="text-white text-3xl">🍽️</Text>
+        <View className="w-24 h-24 bg-primary rounded-full items-center justify-center mb-3">
+          <Text className="text-white text-4xl">🍽️</Text>
         </View>
-        <Text className="text-2xl font-bold text-primary mt-4">Crear cuenta</Text>
+        <Text className="text-2xl font-bold text-primary">Crear cuenta</Text>
         <Text className="text-gray-500 mt-2">Regístrate para empezar a pedir</Text>
       </View>
 

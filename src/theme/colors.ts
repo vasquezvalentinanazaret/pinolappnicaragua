@@ -1,7 +1,7 @@
 export const colors = {
   primary: "#00A651",
   secondary: "#E30613",
-  background: "#F5F5F5",
+  background: "#FFFFFF",
   text: "#333333",
   white: "#FFFFFF",
   gray: {
@@ -19,4 +19,5 @@ export const colors = {
   success: "#10B981",
   warning: "#F59E0B",
   error: "#EF4444",
+  orange: "#F97316",
 };

@@ -1,29 +1,59 @@
-import React, { createContext, useContext, ReactNode } from "react";
-import { useLocation } from "@/src/hooks/useLocation";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import * as Location from "expo-location";
+
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  address?: string;
+  city?: string;
+}
 
 interface LocationContextType {
-  location: { latitude: number; longitude: number; address?: string } | null;
+  location: LocationData | null;
   error: string | null;
   loading: boolean;
-  refreshLocation: () => void;
+  refreshLocation: () => Promise<void>;
+  getAddressFromCoords: (lat: number, lng: number) => Promise<string>;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
 
 export const LocationProvider = ({ children }: { children: ReactNode }) => {
-  const locationData = useLocation();
+  const [location, setLocation] = useState<LocationData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  return (
-    <LocationContext.Provider value={locationData}>
-      {children}
-    </LocationContext.Provider>
-  );
-};
+  const getAddressFromCoords = async (latitude: number, longitude: number): Promise<string> => {
+    try {
+      const address = await Location.reverseGeocodeAsync({ latitude, longitude });
+      if (address[0]) {
+        const { street, district, city, region } = address[0];
+        return [street, district, city, region].filter(Boolean).join(", ");
+      }
+      return `${latitude}, ${longitude}`;
+    } catch {
+      return `${latitude}, ${longitude}`;
+    }
+  };
 
-export const useLocationContext = () => {
-  const context = useContext(LocationContext);
-  if (context === undefined) {
-    throw new Error("useLocationContext must be used within a LocationProvider");
-  }
-  return context;
-};
+  const getLocation = async () => {
+    setLoading(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setError("Permiso de ubicación denegado");
+        setLoading(false);
+        return;
+      }
+
+      const userLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      const address = await getAddressFromCoords(
+        userLocation.coords.latitude,
+        userLocation.coords.longitude
+      );
+
+      setLocation({
+        latitude: userLocation.coords.l

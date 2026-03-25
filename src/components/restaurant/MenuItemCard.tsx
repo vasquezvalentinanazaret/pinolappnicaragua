@@ -1,37 +1,27 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import { MenuItem } from "@/src/types";
-import { useCartStore } from "@/src/store/cartStore";
+import { View, Text, TouchableOpacity } from "react-native";
+
+interface MenuItem {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+}
 
 interface MenuItemCardProps {
   item: MenuItem;
+  onAddToCart: () => void;
 }
 
-export default function MenuItemCard({ item }: MenuItemCardProps) {
-  const { addItem } = useCartStore();
-
-  const handleAddToCart = () => {
-    addItem({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: 1,
-      restaurant: item.restaurant,
-      restaurantId: item.restaurantId,
-    });
-  };
-
+export default function MenuItemCard({ item, onAddToCart }: MenuItemCardProps) {
   return (
-    <View className="bg-white rounded-lg mb-3 shadow-sm overflow-hidden">
-      <View className="flex-row p-3">
+    <View className="bg-white rounded-xl p-4 mb-3 shadow-sm border border-gray-100">
+      <View className="flex-row justify-between items-start">
         <View className="flex-1">
-          <Text className="font-semibold text-text text-base">{item.name}</Text>
-          <Text className="text-gray-500 text-sm mt-1">{item.description}</Text>
-          <Text className="text-primary font-bold mt-2">C$ {item.price}</Text>
+          <Text className="text-lg font-bold text-gray-800">{item.name}</Text>
+          <Text className="text-gray-500 mt-1">{item.description}</Text>
+          <Text className="text-primary font-bold text-xl mt-2">C$ {item.price}</Text>
         </View>
-        <TouchableOpacity
-          className="bg-primary px-4 py-2 rounded-lg self-center"
-          onPress={handleAddToCart}
-        >
+        <TouchableOpacity className="bg-primary px-5 py-2 rounded-full" onPress={onAddToCart}>
           <Text className="text-white font-semibold">Agregar</Text>
         </TouchableOpacity>
       </View>

@@ -26,8 +26,9 @@ export default function Input({
   return (
     <View className="mb-4">
       <TextInput
-        className={`bg-white border ${error ? "border-red-500" : "border-gray-200"} rounded-lg px-4 py-3 text-base ${multiline ? "h-24" : "h-12"} ${className}`}
+        className={`bg-white border ${error ? "border-red-500" : "border-gray-200"} rounded-xl px-4 py-3 text-base ${multiline ? "min-h-[100px]" : "h-12"} ${className}`}
         placeholder={placeholder}
+        placeholderTextColor="#9CA3AF"
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}

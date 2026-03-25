@@ -2,6 +2,7 @@ export interface Restaurant {
   id: number;
   name: string;
   rating: number;
+  stars: string;
   deliveryTime: number;
   deliveryFee: number;
   address: string;
@@ -16,7 +17,23 @@ export interface MenuItem {
   price: number;
   restaurant: string;
   restaurantId: number;
-  image: string;
+}
+
+export interface Offer {
+  id: number;
+  name: string;
+  originalPrice: number;
+  price: number;
+  description: string;
+}
+
+export interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  restaurant: string;
+  restaurantId: number;
 }
 
 export interface Order {
@@ -29,6 +46,8 @@ export interface Order {
   }>;
   total: number;
   status: "pending" | "confirmed" | "preparing" | "delivering" | "delivered";
+  statusText: string;
+  statusColor: string;
   createdAt: string;
   address: string;
   instructions?: string;
@@ -41,13 +60,4 @@ export interface Driver {
   phone: string;
   rating: number;
   photo: string;
-}
-
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  restaurant: string;
-  restaurantId: number;
 }

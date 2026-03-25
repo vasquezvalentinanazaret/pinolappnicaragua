@@ -1,17 +1,9 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuthStore } from "@/src/store/authStore";
-import Button from "@/src/components/ui/Button";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, signOut } = useAuthStore();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.replace("/(auth)/login");
-  };
 
   const menuItems = [
     { icon: "person-outline", title: "Información personal", onPress: () => {} },
@@ -22,14 +14,14 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <ScrollView className="flex-1 bg-background">
+    <ScrollView className="flex-1 bg-gray-50">
       <View className="bg-primary pt-12 pb-6 px-4">
         <View className="items-center">
           <View className="w-24 h-24 bg-white rounded-full items-center justify-center mb-3">
             <Ionicons name="person" size={48} color="#00A651" />
           </View>
-          <Text className="text-white text-xl font-bold">{user?.name || "Usuario"}</Text>
-          <Text className="text-white/80">{user?.email}</Text>
+          <Text className="text-white text-xl font-bold">Carlos Pérez</Text>
+          <Text className="text-white/80">carlos@email.com</Text>
         </View>
       </View>
 
@@ -41,17 +33,17 @@ export default function ProfileScreen() {
             onPress={item.onPress}
           >
             <Ionicons name={item.icon as any} size={24} color="#00A651" />
-            <Text className="flex-1 ml-3 text-text">{item.title}</Text>
+            <Text className="flex-1 ml-3 text-gray-800">{item.title}</Text>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </TouchableOpacity>
         ))}
 
-        <Button
-          title="Cerrar sesión"
-          onPress={handleSignOut}
-          variant="outline"
-          className="mt-4 mb-8"
-        />
+        <TouchableOpacity
+          className="bg-red-500 py-3 rounded-lg mt-4 mb-8"
+          onPress={() => router.push("/login")}
+        >
+          <Text className="text-white text-center font-semibold">Cerrar sesión</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

@@ -56,4 +56,41 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
       );
 
       setLocation({
-        latitude: userLocation.coords.l
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+        address,
+      });
+      setError(null);
+    } catch (err) {
+      setError("Error al obtener ubicación");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  return (
+    <LocationContext.Provider
+      value={{
+        location,
+        error,
+        loading,
+        refreshLocation: getLocation,
+        getAddressFromCoords,
+      }}
+    >
+      {children}
+    </LocationContext.Provider>
+  );
+};
+
+export const useLocationContext = () => {
+  const context = useContext(LocationContext);
+  if (context === undefined) {
+    throw new Error("useLocationContext must be used within a LocationProvider");
+  }
+  return context;
+};

@@ -9,10 +9,7 @@ module.exports = {
         background: "#F5F5F5",
         text: "#333333",
       },
-      fontFamily: {
-        sans: ["System"],
-      },
     },
   },
   plugins: [],
-};
+}

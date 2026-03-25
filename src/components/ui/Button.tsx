@@ -1,5 +1,4 @@
 import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
-import { colors } from "@/src/theme/colors";
 
 interface ButtonProps {
   title: string;
@@ -42,14 +41,14 @@ export default function Button({
 
   return (
     <TouchableOpacity
-      className={`py-3 rounded-lg items-center ${getButtonStyles()} ${disabled ? "opacity-50" : ""} ${className}`}
+      className={`py-3 rounded-xl items-center ${getButtonStyles()} ${disabled ? "opacity-50" : ""} ${className}`}
       onPress={onPress}
       disabled={disabled || loading}
     >
       {loading ? (
-        <ActivityIndicator color={variant === "outline" ? colors.primary : "white"} />
+        <ActivityIndicator color={variant === "outline" ? "#00A651" : "white"} />
       ) : (
-        <Text className={`font-semibold ${getTextStyles()}`}>{title}</Text>
+        <Text className={`font-semibold text-base ${getTextStyles()}`}>{title}</Text>
       )}
     </TouchableOpacity>
   );

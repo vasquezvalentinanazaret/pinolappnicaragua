@@ -1,7 +1,6 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { useAuthStore } from "@/src/store/authStore";
 import Button from "@/src/components/ui/Button";
 import Input from "@/src/components/ui/Input";
 
@@ -10,12 +9,11 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuthStore();
 
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await signIn(email, password);
+      // Aquí irá la lógica de autenticación
       router.replace("/(tabs)");
     } catch (error) {
       console.error(error);
@@ -27,11 +25,9 @@ export default function LoginScreen() {
   return (
     <View className="flex-1 bg-white px-6 pt-20">
       <View className="items-center mb-12">
-        <Image
-          source={require("@/src/assets/images/logo.png")}
-          className="w-32 h-32"
-          resizeMode="contain"
-        />
+        <View className="w-32 h-32 bg-primary rounded-full items-center justify-center">
+          <Text className="text-white text-4xl">🍽️</Text>
+        </View>
         <Text className="text-2xl font-bold text-primary mt-4">¡Bienvenido!</Text>
         <Text className="text-gray-500 mt-2">Inicia sesión para continuar</Text>
       </View>

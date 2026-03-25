@@ -1,29 +1,32 @@
-import { useState, useEffect } from "react";
-import { useOrderStore } from "@/src/store/orderStore";
-import { Order } from "@/src/types";
+import { useOrderStore, Order } from "@/src/store/orderStore";
+import { useCallback } from "react";
 
 export const useOrders = () => {
-  const [loading, setLoading] = useState(true);
-  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
-  const [completedOrders, setCompletedOrders] = useState<Order[]>([]);
+  const activeOrders = useOrderStore((state) => state.activeOrders);
+  const completedOrders = useOrderStore((state) => state.completedOrders);
+  const loading = useOrderStore((state) => state.loading);
+  const createOrder = useOrderStore((state) => state.createOrder);
+  const updateOrderStatus = useOrderStore((state) => state.updateOrderStatus);
+  const getOrderById = useOrderStore((state) => state.getOrderById);
+  const cancelOrder = useOrderStore((state) => state.cancelOrder);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const active = useOrderStore.getState().activeOrders;
-        const completed = useOrderStore.getState().completedOrders;
-        setActiveOrders(active);
-        setCompletedOrders(completed);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getActiveOrder = useCallback(() => {
+    return activeOrders[0] || null;
+  }, [activeOrders]);
 
-    fetchOrders();
-  }, []);
+  const hasActiveOrder = useCallback(() => {
+    return activeOrders.length > 0;
+  }, [activeOrders]);
 
-  return { activeOrders, completedOrders, loading };
+  return {
+    activeOrders,
+    completedOrders,
+    loading,
+    createOrder,
+    updateOrderStatus,
+    getOrderById,
+    cancelOrder,
+    getActiveOrder,
+    hasActiveOrder,
+  };
 };

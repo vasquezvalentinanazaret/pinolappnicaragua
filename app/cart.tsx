@@ -1,80 +1,89 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { useCartStore } from "@/src/store/cartStore";
-import Button from "@/src/components/ui/Button";
-import CartSummary from "@/src/components/cart/CartSummary";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function CartScreen() {
   const router = useRouter();
-  const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCartStore();
 
-  const handleCheckout = () => {
-    if (items.length > 0) {
-      router.push("/checkout");
-    }
-  };
+  const cartItems = [
+    { id: 1, name: "Bajo", price: 180, quantity: 2, restaurant: "El Buen Sabor" },
+  ];
 
-  if (items.length === 0) {
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const delivery = 30;
+  const total = subtotal + delivery;
+
+  if (cartItems.length === 0) {
     return (
-      <View className="flex-1 justify-center items-center bg-background p-4">
-        <Ionicons name="cart-outline" size={64} color="#9CA3AF" />
-        <Text className="text-gray-500 text-lg mt-4">Tu carrito está vacío</Text>
-        <Text className="text-gray-400 text-center mt-2">
+      <View className="flex-1 justify-center items-center bg-gray-50 p-4">
+        <View className="w-28 h-28 bg-gray-200 rounded-full items-center justify-center mb-4">
+          <Ionicons name="cart-outline" size={56} color="#9CA3AF" />
+        </View>
+        <Text className="text-gray-500 text-xl font-medium mt-4">Tu carrito está vacío</Text>
+        <Text className="text-gray-400 text-center mt-2 px-8">
           Agrega productos desde el menú de un restaurante
         </Text>
-        <Button
-          title="Explorar restaurantes"
+        <TouchableOpacity
+          className="bg-primary px-8 py-3 rounded-full mt-6"
           onPress={() => router.push("/")}
-          className="mt-6"
-        />
+        >
+          <Text className="text-white font-bold text-lg">Explorar restaurantes</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-background">
+    <ScrollView className="flex-1 bg-gray-50">
       <View className="px-4 pt-4">
-        {items.map((item) => (
-          <View key={item.id} className="bg-white rounded-lg p-4 mb-3 shadow-sm">
+        {cartItems.map((item) => (
+          <View key={item.id} className="bg-white rounded-2xl p-4 mb-3 shadow-sm">
             <View className="flex-row justify-between">
               <View className="flex-1">
-                <Text className="font-semibold text-text">{item.name}</Text>
-                <Text className="text-gray-500 text-sm">{item.restaurant}</Text>
-                <Text className="text-primary font-bold mt-1">C$ {item.price}</Text>
+                <Text className="font-bold text-gray-800 text-lg">{item.name}</Text>
+                <Text className="text-gray-500 text-sm mt-1">{item.restaurant}</Text>
+                <Text className="text-primary font-bold text-xl mt-2">C$ {item.price}</Text>
               </View>
               <View className="flex-row items-center">
-                <TouchableOpacity
-                  className="w-8 h-8 bg-gray-200 rounded-full items-center justify-center"
-                  onPress={() => updateQuantity(item.id, item.quantity - 1)}
-                >
-                  <Text className="text-lg font-bold">-</Text>
+                <TouchableOpacity className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center">
+                  <Text className="text-xl font-bold text-gray-600">-</Text>
                 </TouchableOpacity>
-                <Text className="mx-3 text-lg font-semibold">{item.quantity}</Text>
-                <TouchableOpacity
-                  className="w-8 h-8 bg-gray-200 rounded-full items-center justify-center"
-                  onPress={() => updateQuantity(item.id, item.quantity + 1)}
-                >
-                  <Text className="text-lg font-bold">+</Text>
+                <Text className="mx-4 text-lg font-bold">{item.quantity}</Text>
+                <TouchableOpacity className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center">
+                  <Text className="text-xl font-bold text-gray-600">+</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  className="ml-3"
-                  onPress={() => removeItem(item.id)}
-                >
-                  <Ionicons name="trash-outline" size={20} color="#E30613" />
+                <TouchableOpacity className="ml-3">
+                  <Ionicons name="trash-outline" size={24} color="#E30613" />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         ))}
 
-        <CartSummary subtotal={getTotalPrice()} delivery={30} total={getTotalPrice() + 30} />
+        <View className="bg-white rounded-2xl p-4 mt-4 shadow-sm">
+          <Text className="font-bold text-gray-800 text-lg mb-3">Resumen</Text>
+          <View className="flex-row justify-between mb-2">
+            <Text className="text-gray-600">Subtotal</Text>
+            <Text className="text-gray-800">C$ {subtotal}</Text>
+          </View>
+          <View className="flex-row justify-between mb-2">
+            <Text className="text-gray-600">Envío</Text>
+            <Text className="text-gray-800">C$ {delivery}</Text>
+          </View>
+          <View className="border-t border-gray-200 mt-3 pt-3">
+            <View className="flex-row justify-between">
+              <Text className="font-bold text-gray-800 text-lg">Total</Text>
+              <Text className="font-bold text-primary text-2xl">C$ {total}</Text>
+            </View>
+          </View>
+        </View>
 
-        <Button
-          title="Proceder al pago"
-          onPress={handleCheckout}
-          className="mt-4 mb-8"
-        />
+        <TouchableOpacity
+          className="bg-primary py-4 rounded-full mt-6 mb-8"
+          onPress={() => router.push("/checkout")}
+        >
+          <Text className="text-white text-center font-bold text-lg">Proceder al pago</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

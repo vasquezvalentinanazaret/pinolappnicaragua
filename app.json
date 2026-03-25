@@ -26,15 +26,7 @@
     "web": {
       "favicon": "./src/assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow PinolApp to use your location to show nearby restaurants."
-        }
-      ]
-    ],
+    "plugins": ["expo-router"],
     "scheme": "pinolapp"
   }
 }

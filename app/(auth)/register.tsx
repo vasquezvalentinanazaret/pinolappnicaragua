@@ -1,7 +1,6 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { useAuthStore } from "@/src/store/authStore";
 import Button from "@/src/components/ui/Button";
 import Input from "@/src/components/ui/Input";
 
@@ -12,7 +11,6 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signUp } = useAuthStore();
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -22,7 +20,7 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      await signUp(email, password, name);
+      // Aquí irá la lógica de registro
       router.replace("/(tabs)");
     } catch (error) {
       console.error(error);
@@ -34,11 +32,9 @@ export default function RegisterScreen() {
   return (
     <View className="flex-1 bg-white px-6 pt-20">
       <View className="items-center mb-8">
-        <Image
-          source={require("@/src/assets/images/logo.png")}
-          className="w-24 h-24"
-          resizeMode="contain"
-        />
+        <View className="w-24 h-24 bg-primary rounded-full items-center justify-center">
+          <Text className="text-white text-3xl">🍽️</Text>
+        </View>
         <Text className="text-2xl font-bold text-primary mt-4">Crear cuenta</Text>
         <Text className="text-gray-500 mt-2">Regístrate para empezar a pedir</Text>
       </View>

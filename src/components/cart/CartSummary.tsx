@@ -8,22 +8,15 @@ interface CartSummaryProps {
 
 export default function CartSummary({ subtotal, delivery, total }: CartSummaryProps) {
   return (
-    <View className="bg-white rounded-lg p-4 shadow-sm">
-      <Text className="font-semibold text-text text-lg mb-3">Resumen</Text>
+    <View className="bg-white rounded-2xl p-4 shadow-sm">
+      <Text className="font-bold text-gray-800 text-lg mb-3">Resumen</Text>
       <View className="flex-row justify-between mb-2">
         <Text className="text-gray-600">Subtotal</Text>
-        <Text className="text-gray-600">C$ {subtotal}</Text>
+        <Text className="text-gray-800">C$ {subtotal}</Text>
       </View>
       <View className="flex-row justify-between mb-2">
         <Text className="text-gray-600">Envío</Text>
-        <Text className="text-gray-600">C$ {delivery}</Text>
+        <Text className="text-gray-800">C$ {delivery}</Text>
       </View>
-      <View className="border-t border-gray-200 mt-2 pt-2">
+      <View className="border-t border-gray-200 mt-3 pt-3">
         <View className="flex-row justify-between">
-          <Text className="font-semibold text-text">Total</Text>
-          <Text className="font-bold text-primary">C$ {total}</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
